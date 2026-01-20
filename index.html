@@ -36,30 +36,29 @@
 
         /* --- LIGNES COACH (Accordeon Header) --- */
         .player-row {
-            /* On enlève le display grid ici car on va gérer l'intérieur différemment */
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             margin-bottom: 12px;
             transition: background 0.2s;
-            cursor: pointer; /* Indique qu'on peut cliquer */
-            overflow: hidden; /* Important pour l'animation */
+            cursor: pointer;
+            overflow: hidden;
         }
         .player-row:hover { background: rgba(255, 255, 255, 0.2); }
 
         /* La partie visible (Résumé) */
         .row-summary {
             display: grid;
-            grid-template-columns: 50px 2fr 2.5fr 1fr; /* On remet la grille ici */
+            grid-template-columns: 50px 2fr 2.5fr 1fr;
             padding: 10px 20px;
             align-items: center;
         }
 
         /* --- CONTENU CACHÉ (ROSTER) --- */
         .roster-details {
-            display: none; /* Caché par défaut */
-            background: rgba(0, 0, 0, 0.2); /* Fond plus sombre pour le détail */
+            display: none; 
+            background: rgba(0, 0, 0, 0.2); 
             padding: 15px 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -68,14 +67,24 @@
         .roster-item {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 8px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 0.9rem;
         }
         .roster-item:last-child { border-bottom: none; }
+
+        /* NOUVEAU : Style de l'image du joueur dans la liste */
+        .roster-left { display: flex; align-items: center; gap: 10px; }
+        .roster-img {
+            width: 32px; height: 32px;
+            border-radius: 50%; /* Rond parfait */
+            object-fit: cover;
+            background-color: rgba(255,255,255,0.1);
+        }
         
         .roster-name { color: #ddd; }
-        .roster-name.starter { color: #fff; font-weight: 600; } /* Style Titulaire */
+        .roster-name.starter { color: #fff; font-weight: 600; }
         .roster-name.starter::before { content: "⭐ "; font-size: 0.8rem; }
         
         .roster-score { color: #81e6d9; font-weight: 600; }
@@ -118,6 +127,9 @@
             .mvp-info { grid-area: mvp; margin-top: 5px; }
             .mvp-image { height: 45px; } 
             .mvp-name { font-size: 0.9rem; }
+
+            /* NOUVEAU : On cache le texte du statut sur mobile */
+            .roster-status { display: none; }
         }
     </style>
 </head>
@@ -142,14 +154,13 @@
     <script>
         // --- CONFIGURATION ---
         const sheetID = '1TuAK0ETIb-mcpy6Se33_NCkF9RhoQT7j32uJko38Pnw'; // TON ID
-        const tabRanking = 'API_JOUEURS'; // Onglet Classement
-        const tabDetails = 'API_DETAILS'; // NOUVEL Onglet Détails (Joueurs par coach)
+        const tabRanking = 'API_JOUEURS'; 
+        const tabDetails = 'API_DETAILS'; 
 
         async function fetchData() {
             const container = document.getElementById('app');
             
             try {
-                // ON CHARGE LES DEUX ONGLETS EN PARALLÈLE
                 const [resRanking, resDetails] = await Promise.all([
                     fetch(`https://opensheet.elk.sh/${sheetID}/${tabRanking}`),
                     fetch(`https://opensheet.elk.sh/${sheetID}/${tabDetails}`)
@@ -158,7 +169,6 @@
                 const rankingData = await resRanking.json();
                 const detailsData = await resDetails.json();
 
-                // Tri du classement
                 rankingData.sort((a, b) => parseFloat(b.score_semaine) - parseFloat(a.score_semaine));
 
                 container.innerHTML = '';
@@ -167,46 +177,36 @@
                     let rank = index + 1;
                     let displayRank = rank < 10 ? `0${rank}` : rank;
 
-                    // 1. Filtrer les joueurs qui appartiennent à ce coach
-                    // Assure-toi que la colonne s'appelle bien 'coach' dans API_DETAILS
                     const myPlayers = detailsData.filter(p => p.coach === coach.coach);
                     
-                    // Tri des joueurs du coach (Titulaires en premier, puis par score)
                     myPlayers.sort((a, b) => {
-                        // Si l'un est titulaire et l'autre non, le titulaire gagne
                         const isStarterA = a.statut && a.statut.includes('Titulaire');
                         const isStarterB = b.statut && b.statut.includes('Titulaire');
                         if (isStarterA && !isStarterB) return -1;
                         if (!isStarterA && isStarterB) return 1;
-                        // Sinon tri par score décroissant
                         return parseFloat(b.score) - parseFloat(a.score);
                     });
 
-                    // 2. Création de la ligne principale
                     const row = document.createElement('div');
                     row.className = 'player-row';
                     
-                    // On ajoute un ID unique pour gérer le clic
                     row.onclick = function() {
                         const detailsDiv = this.querySelector('.roster-details');
-                        if (detailsDiv.style.display === 'block') {
-                            detailsDiv.style.display = 'none';
-                        } else {
-                            detailsDiv.style.display = 'block';
-                        }
+                        detailsDiv.style.display = (detailsDiv.style.display === 'block') ? 'none' : 'block';
                     };
 
-                    // 3. Génération du HTML pour la liste des joueurs
                     let rosterHTML = '';
                     if(myPlayers.length > 0) {
                         myPlayers.forEach(player => {
-                            // On vérifie si c'est un titulaire pour le style
                             const isStarter = player.statut && player.statut.includes('Titulaire');
                             const cssClass = isStarter ? 'roster-name starter' : 'roster-name';
                             
+                            // NOUVEAU : Ajout de l'image (player.img)
+                            // Utilisation de onerror pour cacher l'image si vide ou erreur
                             rosterHTML += `
                                 <div class="roster-item">
-                                    <div>
+                                    <div class="roster-left">
+                                        <img src="${player.img}" class="roster-img" onerror="this.style.display='none'">
                                         <span class="${cssClass}">${player.joueur}</span>
                                     </div>
                                     <div style="display:flex; align-items:center">
@@ -217,10 +217,9 @@
                             `;
                         });
                     } else {
-                        rosterHTML = '<div class="roster-item" style="color:#888; font-style:italic">Aucun joueur trouvé pour ce coach...</div>';
+                        rosterHTML = '<div class="roster-item" style="color:#888; font-style:italic">Aucun joueur trouvé...</div>';
                     }
 
-                    // 4. Assemblage final
                     row.innerHTML = `
                         <div class="row-summary">
                             <div class="rank">${displayRank}</div>
@@ -255,7 +254,7 @@
                 });
 
             } catch (error) {
-                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie que l\'onglet API_DETAILS existe bien et que les noms de coachs correspondent.</p>';
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie que l\'onglet API_DETAILS contient bien la colonne img.</p>';
                 console.error(error);
             }
         }
