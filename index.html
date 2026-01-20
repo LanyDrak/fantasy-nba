@@ -7,12 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- DESIGN GLOBAL (Fond Bleu) --- */
+        /* --- DESIGN GLOBAL --- */
         body {
             font-family: 'Poppins', sans-serif;
-            /* Le dégradé bleu de l'image */
             background: linear-gradient(135deg, #005bea 0%, #00c6fb 100%); 
-            background-attachment: fixed; /* Le fond reste fixe quand on scrolle */
+            background-attachment: fixed;
             color: #ffffff;
             margin: 0;
             padding: 20px;
@@ -35,16 +34,12 @@
             margin-bottom: 30px;
         }
 
-        /* --- LE TABLEAU (CONTAINER) --- */
-        .leaderboard-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .leaderboard-container { max-width: 800px; margin: 0 auto; }
 
-        /* --- ENTÊTE DU TABLEAU --- */
+        /* --- ENTÊTE --- */
         .header-row {
             display: grid;
-            grid-template-columns: 50px 2fr 1.5fr 1fr;
+            grid-template-columns: 50px 2fr 2fr 1fr; /* Agrandissement de la colonne centrale pour l'image */
             padding: 10px 20px;
             font-size: 0.8rem;
             font-weight: 700;
@@ -53,68 +48,65 @@
             letter-spacing: 1px;
         }
 
-        /* --- LIGNES DES JOUEURS (Glassmorphism) --- */
+        /* --- LIGNES JOUEURS --- */
         .player-row {
             display: grid;
-            grid-template-columns: 50px 2fr 1.5fr 1fr;
+            grid-template-columns: 50px 2fr 2fr 1fr; /* Idem ici */
             align-items: center;
-            
-            /* L'effet de transparence "Verre" */
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            
             border-radius: 12px;
             padding: 15px 20px;
             margin-bottom: 12px;
             transition: transform 0.2s ease, background 0.2s;
         }
-
-        /* Effet au survol */
         .player-row:hover {
             transform: translateY(-2px);
             background: rgba(255, 255, 255, 0.2);
         }
 
         /* --- COLONNES --- */
-        
-        /* 1. Le Numéro (Rang) */
-        .rank {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.5);
-        }
-        /* Top 3 en couleur */
-        .player-row:nth-child(1) .rank { color: #ffd700; } /* Or */
-        .player-row:nth-child(2) .rank { color: #c0c0c0; } /* Argent */
-        .player-row:nth-child(3) .rank { color: #cd7f32; } /* Bronze */
+        .rank { font-size: 1.2rem; font-weight: 700; color: rgba(255, 255, 255, 0.5); }
+        .player-row:nth-child(1) .rank { color: #ffd700; }
+        .player-row:nth-child(2) .rank { color: #c0c0c0; }
+        .player-row:nth-child(3) .rank { color: #cd7f32; }
 
-        /* 2. Coach & Équipe */
-        .coach-info {
+        .coach-info { display: flex; flex-direction: column; }
+        .coach-name { font-weight: 700; font-size: 1.1rem; }
+        .team-name { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
+
+        /* --- NOUVEAU : DESIGN MVP AVEC IMAGE --- */
+        .mvp-info {
+            display: flex;
+            justify-content: center; /* Centré sur PC */
+            align-items: center;
+        }
+        /* Le conteneur flexible qui tient l'image et le texte */
+        .mvp-container {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Espace entre image et texte */
+        }
+        /* L'image avatar ronde */
+        .mvp-image {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Rend l'image parfaitement ronde */
+            object-fit: cover; /* Empêche l'image d'être déformée */
+            border: 2px solid rgba(255, 255, 255, 0.3); /* Petite bordure classe */
+            background-color: rgba(0,0,0,0.2); /* Fond si image PNG transparente */
+        }
+        .mvp-text-details {
             display: flex;
             flex-direction: column;
+            text-align: left;
         }
-        .coach-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        .team-name {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-            text-transform: uppercase;
-        }
+        .mvp-name { font-weight: 600; color: #fff; font-size: 0.95rem; }
+        .mvp-score { color: #81e6d9; font-size: 0.8rem; font-weight: 700;}
 
-        /* 3. MVP de la semaine (Stats au milieu) */
-        .mvp-info {
-            font-size: 0.85rem;
-            text-align: center; /* Centré comme W/D/L sur l'image */
-            color: #d1d5db;
-        }
-        .mvp-name { font-weight: 600; color: #fff; }
-        .mvp-score { color: #81e6d9; font-size: 0.8rem; }
-
-        /* 4. Score Final (Bouton bleu à droite sur l'image) */
+        /* --- SCORE FINAL --- */
         .score-box {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
@@ -127,40 +119,41 @@
 
         .loader { text-align: center; margin-top: 50px; color: rgba(255,255,255,0.7); }
 
-        /* --- MOBILE RESPONSIVE --- */
+        /* --- MOBILE --- */
         @media (max-width: 600px) {
-            .header-row { display: none; } /* On cache les titres sur mobile */
-            
+            .header-row { display: none; }
             .player-row {
-                /* Sur mobile, on change la grille */
                 grid-template-columns: 30px 1fr auto; 
                 grid-template-areas: 
                     "rank coach score"
                     "rank mvp score";
-                gap: 5px;
+                gap: 10px;
+                padding: 15px;
             }
-            .rank { grid-area: rank; font-size: 1rem; }
+            .rank { grid-area: rank; font-size: 1rem; align-self: center;}
             .coach-info { grid-area: coach; }
-            .score-box { grid-area: score; min-width: 70px; }
+            .score-box { grid-area: score; min-width: 70px; align-self: center;}
+            
             .mvp-info { 
                 grid-area: mvp; 
-                text-align: left; /* Alignement gauche sur mobile */
-                font-size: 0.8rem;
-                opacity: 0.8;
+                justify-content: flex-start; /* Alignement gauche sur mobile */
             }
+            /* Image un peu plus petite sur mobile */
+            .mvp-image { width: 38px; height: 38px; }
+            .mvp-name { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
-    <h1>Fantasy NBA League</h1>
-    <div class="subtitle">Weekly Ranking</div>
+    <h1>Fantasy League</h1>
+    <div class="subtitle">Classement Hebdomadaire</div>
     
     <div class="leaderboard-container">
         <div class="header-row">
             <div>NO</div>
-            <div>TEAM</div>
-            <div style="text-align: center">TEAM WEEK MVP</div>
+            <div>CLUB</div>
+            <div style="text-align: center">MVP SEMAINE</div>
             <div style="text-align: center">POINTS</div>
         </div>
 
@@ -170,9 +163,9 @@
     </div>
 
     <script>
-        // CONFIGURATION
+        // --- CONFIGURATION ---
         const sheetID = '1TuAK0ETIb-mcpy6Se33_NCkF9RhoQT7j32uJko38Pnw'; // TON ID
-        const tabName = 'API_JOUEURS'; // Ton nouvel onglet préparé
+        const tabName = 'API_JOUEURS'; // Ton onglet
 
         async function fetchData() {
             const container = document.getElementById('app');
@@ -181,25 +174,21 @@
                 const response = await fetch(`https://opensheet.elk.sh/${sheetID}/${tabName}`);
                 const data = await response.json();
 
-                // 1. TRIER LE CLASSEMENT (Du plus grand score au plus petit)
-                // Assurons-nous que score_semaine est bien un nombre
+                // Tri par score décroissant
                 data.sort((a, b) => parseFloat(b.score_semaine) - parseFloat(a.score_semaine));
 
                 container.innerHTML = '';
 
-                // 2. BOUCLE SUR LES JOUEURS
                 data.forEach((coach, index) => {
-                    
-                    // Calcul du rang (index + 1 pour avoir 1, 2, 3...)
-                    // On ajoute un '0' devant si c'est < 10 (ex: 01, 04)
                     let rank = index + 1;
                     let displayRank = rank < 10 ? `0${rank}` : rank;
 
                     const row = document.createElement('div');
                     row.className = 'player-row';
                     
-                    // On injecte les nouvelles données
-                    // Note: Vérifie bien que tes clés JSON (coach.xxx) correspondent à tes labels dans QUERY
+                    // --- NOUVELLE STRUCTURE HTML AVEC IMAGE ---
+                    // Note l'ajout de la balise <img> et la nouvelle structure mvp-container
+                    // onerror="this.style.display='none'" cache l'image si le lien est cassé
                     row.innerHTML = `
                         <div class="rank">${displayRank}</div>
                         
@@ -209,8 +198,13 @@
                         </div>
 
                         <div class="mvp-info">
-                            <span class="mvp-name">★ ${coach.top_player}</span><br>
-                            <span class="mvp-score">${coach.top_player_score} pts</span>
+                            <div class="mvp-container">
+                                <img src="${coach.top_player_image}" alt="${coach.top_player}" class="mvp-image" onerror="this.style.display='none'">
+                                <div class="mvp-text-details">
+                                    <span class="mvp-name">${coach.top_player}</span>
+                                    <span class="mvp-score">${coach.top_player_score} pts</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="score-box">
@@ -222,7 +216,7 @@
                 });
 
             } catch (error) {
-                container.innerHTML = '<p style="color:white; text-align:center">Erreur de connexion.<br>Vérifie que l\'onglet API_JOUEURS existe bien.</p>';
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie ta formule QUERY dans Google Sheets (nouveau label image).</p>';
                 console.error(error);
             }
         }
