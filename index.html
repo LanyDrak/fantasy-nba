@@ -58,7 +58,7 @@
         /* --- CONTENU CACHÉ (ROSTER) --- */
         .roster-details {
             display: none; 
-            background: rgba(0, 0, 0, 0.2); 
+            background: rgba(0, 0, 0, 0.3); /* Fond légèrement plus sombre */
             padding: 15px 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -74,17 +74,27 @@
         }
         .roster-item:last-child { border-bottom: none; }
 
-        /* NOUVEAU : Style de l'image du joueur dans la liste */
-        .roster-left { display: flex; align-items: center; gap: 10px; }
+        /* NOUVEAU STYLE POUR LES IMAGES DU ROSTER */
+        .roster-left { display: flex; align-items: center; gap: 12px; }
+        
         .roster-img {
-            width: 32px; height: 32px;
-            border-radius: 50%; /* Rond parfait */
+            height: 40px; /* Hauteur fixe */
+            width: auto;  /* Largeur auto pour garder le format portrait */
+            border-radius: 4px; /* Coins légèrement arrondis comme le MVP */
             object-fit: cover;
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: opacity 0.3s ease;
+        }
+
+        /* Style spécifique pour les joueurs du banc (plus sombres) */
+        .bench-player-img {
+            opacity: 0.6; /* 60% d'opacité pour bien les différencier */
+            filter: grayscale(30%); /* Optionnel : désature un peu les couleurs */
         }
         
-        .roster-name { color: #ddd; }
-        .roster-name.starter { color: #fff; font-weight: 600; }
+        .roster-name { color: #ddd; font-weight: 500; }
+        .roster-name.starter { color: #fff; font-weight: 700; font-size: 1rem; }
         .roster-name.starter::before { content: "⭐ "; font-size: 0.8rem; }
         
         .roster-score { color: #81e6d9; font-weight: 600; }
@@ -127,8 +137,6 @@
             .mvp-info { grid-area: mvp; margin-top: 5px; }
             .mvp-image { height: 45px; } 
             .mvp-name { font-size: 0.9rem; }
-
-            /* NOUVEAU : On cache le texte du statut sur mobile */
             .roster-status { display: none; }
         }
     </style>
@@ -196,70 +204,4 @@
                     };
 
                     let rosterHTML = '';
-                    if(myPlayers.length > 0) {
-                        myPlayers.forEach(player => {
-                            const isStarter = player.statut && player.statut.includes('Titulaire');
-                            const cssClass = isStarter ? 'roster-name starter' : 'roster-name';
-                            
-                            // NOUVEAU : Ajout de l'image (player.img)
-                            // Utilisation de onerror pour cacher l'image si vide ou erreur
-                            rosterHTML += `
-                                <div class="roster-item">
-                                    <div class="roster-left">
-                                        <img src="${player.img}" class="roster-img" onerror="this.style.display='none'">
-                                        <span class="${cssClass}">${player.joueur}</span>
-                                    </div>
-                                    <div style="display:flex; align-items:center">
-                                        <span class="roster-status">${player.statut || ''}</span>
-                                        <span class="roster-score">${player.score} pts</span>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    } else {
-                        rosterHTML = '<div class="roster-item" style="color:#888; font-style:italic">Aucun joueur trouvé...</div>';
-                    }
-
-                    row.innerHTML = `
-                        <div class="row-summary">
-                            <div class="rank">${displayRank}</div>
-                            
-                            <div class="coach-info">
-                                <span class="coach-name">${coach.coach}</span>
-                                <span class="team-name">${coach.equipe}</span>
-                            </div>
-
-                            <div class="mvp-info">
-                                <div class="mvp-container">
-                                    <img src="${coach.top_player_image}" alt="${coach.top_player}" class="mvp-image" onerror="this.style.display='none'">
-                                    <div class="mvp-text-details">
-                                        <span class="mvp-name">${coach.top_player}</span>
-                                        <span class="mvp-score">${coach.top_player_score} pts</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="score-box">
-                                <div class="score-week">${coach.score_semaine}</div>
-                                <span class="score-total">Total: ${coach.total_saison}</span>
-                            </div>
-                        </div>
-
-                        <div class="roster-details">
-                            <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:10px; font-weight:700;">Détail de l'équipe</div>
-                            ${rosterHTML}
-                        </div>
-                    `;
-                    container.appendChild(row);
-                });
-
-            } catch (error) {
-                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie que l\'onglet API_DETAILS contient bien la colonne img.</p>';
-                console.error(error);
-            }
-        }
-
-        fetchData();
-    </script>
-</body>
-</html>
+                    if(myPlayers.length >
