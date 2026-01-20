@@ -204,4 +204,72 @@
                     };
 
                     let rosterHTML = '';
-                    if(myPlayers.length >
+                    if(myPlayers.length > 0) {
+                        myPlayers.forEach(player => {
+                            const isStarter = player.statut && player.statut.includes('Titulaire');
+                            const cssClass = isStarter ? 'roster-name starter' : 'roster-name';
+                            
+                            // --- NOUVEAU : Logique pour l'image sombre ---
+                            // Si c'est un titulaire, classe normale. Sinon, on ajoute la classe "bench-player-img"
+                            const imgClass = isStarter ? 'roster-img' : 'roster-img bench-player-img';
+
+                            rosterHTML += `
+                                <div class="roster-item">
+                                    <div class="roster-left">
+                                        <img src="${player.img}" class="${imgClass}" onerror="this.style.display='none'">
+                                        <span class="${cssClass}">${player.joueur}</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center">
+                                        <span class="roster-status">${player.statut || ''}</span>
+                                        <span class="roster-score">${player.score} pts</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        rosterHTML = '<div class="roster-item" style="color:#888; font-style:italic">Aucun joueur trouvé...</div>';
+                    }
+
+                    row.innerHTML = `
+                        <div class="row-summary">
+                            <div class="rank">${displayRank}</div>
+                            
+                            <div class="coach-info">
+                                <span class="coach-name">${coach.coach}</span>
+                                <span class="team-name">${coach.equipe}</span>
+                            </div>
+
+                            <div class="mvp-info">
+                                <div class="mvp-container">
+                                    <img src="${coach.top_player_image}" alt="${coach.top_player}" class="mvp-image" onerror="this.style.display='none'">
+                                    <div class="mvp-text-details">
+                                        <span class="mvp-name">${coach.top_player}</span>
+                                        <span class="mvp-score">${coach.top_player_score} pts</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="score-box">
+                                <div class="score-week">${coach.score_semaine}</div>
+                                <span class="score-total">Total: ${coach.total_saison}</span>
+                            </div>
+                        </div>
+
+                        <div class="roster-details">
+                            <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:10px; font-weight:700;">Détail de l'équipe</div>
+                            ${rosterHTML}
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+
+            } catch (error) {
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie tes onglets Google Sheets.</p>';
+                console.error(error);
+            }
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
