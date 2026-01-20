@@ -34,12 +34,13 @@
             margin-bottom: 30px;
         }
 
-        .leaderboard-container { max-width: 800px; margin: 0 auto; }
+        .leaderboard-container { max-width: 850px; margin: 0 auto; }
 
         /* --- ENTÊTE --- */
         .header-row {
             display: grid;
-            grid-template-columns: 50px 2fr 2fr 1fr; /* Agrandissement de la colonne centrale pour l'image */
+            /* On ajuste les colonnes pour laisser de la place au MVP */
+            grid-template-columns: 50px 2fr 2.5fr 1fr; 
             padding: 10px 20px;
             font-size: 0.8rem;
             font-weight: 700;
@@ -51,14 +52,16 @@
         /* --- LIGNES JOUEURS --- */
         .player-row {
             display: grid;
-            grid-template-columns: 50px 2fr 2fr 1fr; /* Idem ici */
-            align-items: center;
+            grid-template-columns: 50px 2fr 2.5fr 1fr; /* Mêmes dimensions que l'entête */
+            align-items: center; /* Centre verticalement le contenu */
+            
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            
             border-radius: 12px;
-            padding: 15px 20px;
+            padding: 10px 20px; /* Padding un peu réduit pour la hauteur */
             margin-bottom: 12px;
             transition: transform 0.2s ease, background 0.2s;
         }
@@ -77,34 +80,37 @@
         .coach-name { font-weight: 700; font-size: 1.1rem; }
         .team-name { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
 
-        /* --- NOUVEAU : DESIGN MVP AVEC IMAGE --- */
+        /* --- DESIGN MVP (MODIFIÉ) --- */
         .mvp-info {
             display: flex;
-            justify-content: center; /* Centré sur PC */
+            /* Alignement GAUCHE pour créer la ligne verticale parfaite */
+            justify-content: flex-start; 
             align-items: center;
+            height: 100%;
         }
-        /* Le conteneur flexible qui tient l'image et le texte */
+        
         .mvp-container {
             display: flex;
             align-items: center;
-            gap: 12px; /* Espace entre image et texte */
+            gap: 15px; /* Espace plus grand entre photo et texte */
         }
-        /* L'image avatar ronde */
+        
+        /* L'image rectangulaire (Format Portrait) */
         .mvp-image {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%; /* Rend l'image parfaitement ronde */
-            object-fit: cover; /* Empêche l'image d'être déformée */
-            border: 2px solid rgba(255, 255, 255, 0.3); /* Petite bordure classe */
-            background-color: rgba(0,0,0,0.2); /* Fond si image PNG transparente */
+            height: 60px; /* Hauteur fixe pour uniformiser */
+            width: auto;  /* Largeur auto pour respecter le ratio */
+            border-radius: 6px; /* Coins légèrement arrondis seulement (pas ronds) */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            background-color: rgba(0,0,0,0.2);
         }
+        
         .mvp-text-details {
             display: flex;
             flex-direction: column;
             text-align: left;
         }
-        .mvp-name { font-weight: 600; color: #fff; font-size: 0.95rem; }
-        .mvp-score { color: #81e6d9; font-size: 0.8rem; font-weight: 700;}
+        .mvp-name { font-weight: 600; color: #fff; font-size: 0.95rem; line-height: 1.2; }
+        .mvp-score { color: #81e6d9; font-size: 0.8rem; font-weight: 700; margin-top: 2px;}
 
         /* --- SCORE FINAL --- */
         .score-box {
@@ -127,7 +133,7 @@
                 grid-template-areas: 
                     "rank coach score"
                     "rank mvp score";
-                gap: 10px;
+                gap: 12px;
                 padding: 15px;
             }
             .rank { grid-area: rank; font-size: 1rem; align-self: center;}
@@ -136,10 +142,11 @@
             
             .mvp-info { 
                 grid-area: mvp; 
-                justify-content: flex-start; /* Alignement gauche sur mobile */
+                justify-content: flex-start;
+                margin-top: 5px;
             }
             /* Image un peu plus petite sur mobile */
-            .mvp-image { width: 38px; height: 38px; }
+            .mvp-image { height: 45px; } 
             .mvp-name { font-size: 0.9rem; }
         }
     </style>
@@ -153,7 +160,7 @@
         <div class="header-row">
             <div>NO</div>
             <div>CLUB</div>
-            <div style="text-align: center">MVP SEMAINE</div>
+            <div style="padding-left: 10px;">MVP SEMAINE</div> 
             <div style="text-align: center">POINTS</div>
         </div>
 
@@ -186,9 +193,6 @@
                     const row = document.createElement('div');
                     row.className = 'player-row';
                     
-                    // --- NOUVELLE STRUCTURE HTML AVEC IMAGE ---
-                    // Note l'ajout de la balise <img> et la nouvelle structure mvp-container
-                    // onerror="this.style.display='none'" cache l'image si le lien est cassé
                     row.innerHTML = `
                         <div class="rank">${displayRank}</div>
                         
@@ -216,7 +220,7 @@
                 });
 
             } catch (error) {
-                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie ta formule QUERY dans Google Sheets (nouveau label image).</p>';
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie ta formule QUERY dans Google Sheets.</p>';
                 console.error(error);
             }
         }
