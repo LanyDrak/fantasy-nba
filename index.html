@@ -19,56 +19,67 @@
         }
 
         h1 { 
-            text-align: center; 
-            color: #ffffff; 
-            margin-bottom: 5px; 
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            text-align: center; color: #ffffff; margin-bottom: 5px; 
+            font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; 
         }
-        
-        .subtitle {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-            margin-bottom: 30px;
-        }
-
+        .subtitle { text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin-bottom: 30px; }
         .leaderboard-container { max-width: 850px; margin: 0 auto; }
 
         /* --- ENTÊTE --- */
         .header-row {
             display: grid;
-            /* On ajuste les colonnes pour laisser de la place au MVP */
             grid-template-columns: 50px 2fr 2.5fr 1fr; 
             padding: 10px 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.6);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 0.8rem; font-weight: 700; color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* --- LIGNES JOUEURS --- */
+        /* --- LIGNES COACH (Accordeon Header) --- */
         .player-row {
-            display: grid;
-            grid-template-columns: 50px 2fr 2.5fr 1fr; /* Mêmes dimensions que l'entête */
-            align-items: center; /* Centre verticalement le contenu */
-            
+            /* On enlève le display grid ici car on va gérer l'intérieur différemment */
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            
             border-radius: 12px;
-            padding: 10px 20px; /* Padding un peu réduit pour la hauteur */
             margin-bottom: 12px;
-            transition: transform 0.2s ease, background 0.2s;
+            transition: background 0.2s;
+            cursor: pointer; /* Indique qu'on peut cliquer */
+            overflow: hidden; /* Important pour l'animation */
         }
-        .player-row:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.2);
+        .player-row:hover { background: rgba(255, 255, 255, 0.2); }
+
+        /* La partie visible (Résumé) */
+        .row-summary {
+            display: grid;
+            grid-template-columns: 50px 2fr 2.5fr 1fr; /* On remet la grille ici */
+            padding: 10px 20px;
+            align-items: center;
         }
+
+        /* --- CONTENU CACHÉ (ROSTER) --- */
+        .roster-details {
+            display: none; /* Caché par défaut */
+            background: rgba(0, 0, 0, 0.2); /* Fond plus sombre pour le détail */
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Liste des joueurs */
+        .roster-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+        .roster-item:last-child { border-bottom: none; }
+        
+        .roster-name { color: #ddd; }
+        .roster-name.starter { color: #fff; font-weight: 600; } /* Style Titulaire */
+        .roster-name.starter::before { content: "⭐ "; font-size: 0.8rem; }
+        
+        .roster-score { color: #81e6d9; font-weight: 600; }
+        .roster-status { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-right: 10px;}
 
         /* --- COLONNES --- */
         .rank { font-size: 1.2rem; font-weight: 700; color: rgba(255, 255, 255, 0.5); }
@@ -80,46 +91,14 @@
         .coach-name { font-weight: 700; font-size: 1.1rem; }
         .team-name { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
 
-        /* --- DESIGN MVP (MODIFIÉ) --- */
-        .mvp-info {
-            display: flex;
-            /* Alignement GAUCHE pour créer la ligne verticale parfaite */
-            justify-content: flex-start; 
-            align-items: center;
-            height: 100%;
-        }
-        
-        .mvp-container {
-            display: flex;
-            align-items: center;
-            gap: 15px; /* Espace plus grand entre photo et texte */
-        }
-        
-        /* L'image rectangulaire (Format Portrait) */
-        .mvp-image {
-            height: 60px; /* Hauteur fixe pour uniformiser */
-            width: auto;  /* Largeur auto pour respecter le ratio */
-            border-radius: 6px; /* Coins légèrement arrondis seulement (pas ronds) */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            background-color: rgba(0,0,0,0.2);
-        }
-        
-        .mvp-text-details {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
+        .mvp-info { display: flex; justify-content: flex-start; align-items: center; height: 100%; }
+        .mvp-container { display: flex; align-items: center; gap: 15px; }
+        .mvp-image { height: 60px; width: auto; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); background-color: rgba(0,0,0,0.2); }
+        .mvp-text-details { display: flex; flex-direction: column; text-align: left; }
         .mvp-name { font-weight: 600; color: #fff; font-size: 0.95rem; line-height: 1.2; }
         .mvp-score { color: #81e6d9; font-size: 0.8rem; font-weight: 700; margin-top: 2px;}
 
-        /* --- SCORE FINAL --- */
-        .score-box {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            text-align: center;
-            padding: 8px 0;
-            font-weight: 700;
-        }
+        .score-box { background: rgba(255, 255, 255, 0.2); border-radius: 8px; text-align: center; padding: 8px 0; font-weight: 700; }
         .score-week { font-size: 1.6rem; color: #fff; }
         .score-total { font-size: 0.7rem; color: rgba(255, 255, 255, 0.8); display: block;}
 
@@ -128,24 +107,15 @@
         /* --- MOBILE --- */
         @media (max-width: 600px) {
             .header-row { display: none; }
-            .player-row {
+            .row-summary {
                 grid-template-columns: 30px 1fr auto; 
-                grid-template-areas: 
-                    "rank coach score"
-                    "rank mvp score";
-                gap: 12px;
-                padding: 15px;
+                grid-template-areas: "rank coach score" "rank mvp score";
+                gap: 12px; padding: 15px;
             }
             .rank { grid-area: rank; font-size: 1rem; align-self: center;}
             .coach-info { grid-area: coach; }
             .score-box { grid-area: score; min-width: 70px; align-self: center;}
-            
-            .mvp-info { 
-                grid-area: mvp; 
-                justify-content: flex-start;
-                margin-top: 5px;
-            }
-            /* Image un peu plus petite sur mobile */
+            .mvp-info { grid-area: mvp; margin-top: 5px; }
             .mvp-image { height: 45px; } 
             .mvp-name { font-size: 0.9rem; }
         }
@@ -172,55 +142,120 @@
     <script>
         // --- CONFIGURATION ---
         const sheetID = '1TuAK0ETIb-mcpy6Se33_NCkF9RhoQT7j32uJko38Pnw'; // TON ID
-        const tabName = 'API_JOUEURS'; // Ton onglet
+        const tabRanking = 'API_JOUEURS'; // Onglet Classement
+        const tabDetails = 'API_DETAILS'; // NOUVEL Onglet Détails (Joueurs par coach)
 
         async function fetchData() {
             const container = document.getElementById('app');
             
             try {
-                const response = await fetch(`https://opensheet.elk.sh/${sheetID}/${tabName}`);
-                const data = await response.json();
+                // ON CHARGE LES DEUX ONGLETS EN PARALLÈLE
+                const [resRanking, resDetails] = await Promise.all([
+                    fetch(`https://opensheet.elk.sh/${sheetID}/${tabRanking}`),
+                    fetch(`https://opensheet.elk.sh/${sheetID}/${tabDetails}`)
+                ]);
 
-                // Tri par score décroissant
-                data.sort((a, b) => parseFloat(b.score_semaine) - parseFloat(a.score_semaine));
+                const rankingData = await resRanking.json();
+                const detailsData = await resDetails.json();
+
+                // Tri du classement
+                rankingData.sort((a, b) => parseFloat(b.score_semaine) - parseFloat(a.score_semaine));
 
                 container.innerHTML = '';
 
-                data.forEach((coach, index) => {
+                rankingData.forEach((coach, index) => {
                     let rank = index + 1;
                     let displayRank = rank < 10 ? `0${rank}` : rank;
 
+                    // 1. Filtrer les joueurs qui appartiennent à ce coach
+                    // Assure-toi que la colonne s'appelle bien 'coach' dans API_DETAILS
+                    const myPlayers = detailsData.filter(p => p.coach === coach.coach);
+                    
+                    // Tri des joueurs du coach (Titulaires en premier, puis par score)
+                    myPlayers.sort((a, b) => {
+                        // Si l'un est titulaire et l'autre non, le titulaire gagne
+                        const isStarterA = a.statut && a.statut.includes('Titulaire');
+                        const isStarterB = b.statut && b.statut.includes('Titulaire');
+                        if (isStarterA && !isStarterB) return -1;
+                        if (!isStarterA && isStarterB) return 1;
+                        // Sinon tri par score décroissant
+                        return parseFloat(b.score) - parseFloat(a.score);
+                    });
+
+                    // 2. Création de la ligne principale
                     const row = document.createElement('div');
                     row.className = 'player-row';
                     
-                    row.innerHTML = `
-                        <div class="rank">${displayRank}</div>
-                        
-                        <div class="coach-info">
-                            <span class="coach-name">${coach.coach}</span>
-                            <span class="team-name">${coach.equipe}</span>
-                        </div>
+                    // On ajoute un ID unique pour gérer le clic
+                    row.onclick = function() {
+                        const detailsDiv = this.querySelector('.roster-details');
+                        if (detailsDiv.style.display === 'block') {
+                            detailsDiv.style.display = 'none';
+                        } else {
+                            detailsDiv.style.display = 'block';
+                        }
+                    };
 
-                        <div class="mvp-info">
-                            <div class="mvp-container">
-                                <img src="${coach.top_player_image}" alt="${coach.top_player}" class="mvp-image" onerror="this.style.display='none'">
-                                <div class="mvp-text-details">
-                                    <span class="mvp-name">${coach.top_player}</span>
-                                    <span class="mvp-score">${coach.top_player_score} pts</span>
+                    // 3. Génération du HTML pour la liste des joueurs
+                    let rosterHTML = '';
+                    if(myPlayers.length > 0) {
+                        myPlayers.forEach(player => {
+                            // On vérifie si c'est un titulaire pour le style
+                            const isStarter = player.statut && player.statut.includes('Titulaire');
+                            const cssClass = isStarter ? 'roster-name starter' : 'roster-name';
+                            
+                            rosterHTML += `
+                                <div class="roster-item">
+                                    <div>
+                                        <span class="${cssClass}">${player.joueur}</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center">
+                                        <span class="roster-status">${player.statut || ''}</span>
+                                        <span class="roster-score">${player.score} pts</span>
+                                    </div>
                                 </div>
+                            `;
+                        });
+                    } else {
+                        rosterHTML = '<div class="roster-item" style="color:#888; font-style:italic">Aucun joueur trouvé pour ce coach...</div>';
+                    }
+
+                    // 4. Assemblage final
+                    row.innerHTML = `
+                        <div class="row-summary">
+                            <div class="rank">${displayRank}</div>
+                            
+                            <div class="coach-info">
+                                <span class="coach-name">${coach.coach}</span>
+                                <span class="team-name">${coach.equipe}</span>
+                            </div>
+
+                            <div class="mvp-info">
+                                <div class="mvp-container">
+                                    <img src="${coach.top_player_image}" alt="${coach.top_player}" class="mvp-image" onerror="this.style.display='none'">
+                                    <div class="mvp-text-details">
+                                        <span class="mvp-name">${coach.top_player}</span>
+                                        <span class="mvp-score">${coach.top_player_score} pts</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="score-box">
+                                <div class="score-week">${coach.score_semaine}</div>
+                                <span class="score-total">Total: ${coach.total_saison}</span>
                             </div>
                         </div>
 
-                        <div class="score-box">
-                            <div class="score-week">${coach.score_semaine}</div>
-                            <span class="score-total">Total: ${coach.total_saison}</span>
+                        <div class="roster-details">
+                            <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:10px; font-weight:700;">Détail de l'équipe</div>
+                            ${rosterHTML}
                         </div>
                     `;
                     container.appendChild(row);
                 });
 
             } catch (error) {
-                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie ta formule QUERY dans Google Sheets.</p>';
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie que l\'onglet API_DETAILS existe bien et que les noms de coachs correspondent.</p>';
                 console.error(error);
             }
         }
