@@ -34,7 +34,7 @@
             text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* --- LIGNES COACH (Accordeon Header) --- */
+        /* --- LIGNES COACH --- */
         .player-row {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -47,7 +47,6 @@
         }
         .player-row:hover { background: rgba(255, 255, 255, 0.2); }
 
-        /* La partie visible (Résumé) */
         .row-summary {
             display: grid;
             grid-template-columns: 50px 2fr 2.5fr 1fr;
@@ -55,15 +54,14 @@
             align-items: center;
         }
 
-        /* --- CONTENU CACHÉ (ROSTER) --- */
+        /* --- ROSTER (Détails) --- */
         .roster-details {
             display: none; 
-            background: rgba(0, 0, 0, 0.3); /* Fond légèrement plus sombre */
+            background: rgba(0, 0, 0, 0.3); 
             padding: 15px 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* Liste des joueurs */
         .roster-item {
             display: flex;
             justify-content: space-between;
@@ -74,33 +72,41 @@
         }
         .roster-item:last-child { border-bottom: none; }
 
-        /* NOUVEAU STYLE POUR LES IMAGES DU ROSTER */
         .roster-left { display: flex; align-items: center; gap: 12px; }
         
+        .roster-info-block { display: flex; flex-direction: column; justify-content: center; }
+
         .roster-img {
-            height: 40px; /* Hauteur fixe */
-            width: auto;  /* Largeur auto pour garder le format portrait */
-            border-radius: 4px; /* Coins légèrement arrondis comme le MVP */
+            height: 40px; width: auto; 
+            border-radius: 4px; 
             object-fit: cover;
             background-color: rgba(0,0,0,0.3);
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             transition: opacity 0.3s ease;
         }
-
-        /* Style spécifique pour les joueurs du banc (plus sombres) */
-        .bench-player-img {
-            opacity: 0.6; /* 60% d'opacité pour bien les différencier */
-            filter: grayscale(30%); /* Optionnel : désature un peu les couleurs */
-        }
+        .bench-player-img { opacity: 0.6; filter: grayscale(30%); }
         
-        .roster-name { color: #ddd; font-weight: 500; }
+        .roster-name { color: #ddd; font-weight: 500; line-height: 1.1; }
         .roster-name.starter { color: #fff; font-weight: 700; font-size: 1rem; }
         .roster-name.starter::before { content: "⭐ "; font-size: 0.8rem; }
         
+        /* --- NOUVEAU : STYLE DES BULLES DE MATCHS --- */
+        .dots-container {
+            display: flex;
+            gap: 4px; /* Espace entre les bulles */
+            margin-top: 4px;
+        }
+        .match-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+        }
+        .dot-filled { background-color: #26de81; box-shadow: 0 0 2px #26de81; } /* Vert brillant */
+        .dot-empty { background-color: rgba(255, 255, 255, 0.2); } /* Gris transparent */
+
         .roster-score { color: #81e6d9; font-weight: 600; }
         .roster-status { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-right: 10px;}
 
-        /* --- COLONNES --- */
+        /* --- COLONNES & MVP --- */
         .rank { font-size: 1.2rem; font-weight: 700; color: rgba(255, 255, 255, 0.5); }
         .player-row:nth-child(1) .rank { color: #ffd700; }
         .player-row:nth-child(2) .rank { color: #c0c0c0; }
@@ -160,8 +166,7 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const sheetID = '1TuAK0ETIb-mcpy6Se33_NCkF9RhoQT7j32uJko38Pnw'; // TON ID
+        const sheetID = '1TuAK0ETIb-mcpy6Se33_NCkF9RhoQT7j32uJko38Pnw'; 
         const tabRanking = 'API_JOUEURS'; 
         const tabDetails = 'API_DETAILS'; 
 
@@ -208,16 +213,32 @@
                         myPlayers.forEach(player => {
                             const isStarter = player.statut && player.statut.includes('Titulaire');
                             const cssClass = isStarter ? 'roster-name starter' : 'roster-name';
-                            
-                            // --- NOUVEAU : Logique pour l'image sombre ---
-                            // Si c'est un titulaire, classe normale. Sinon, on ajoute la classe "bench-player-img"
                             const imgClass = isStarter ? 'roster-img' : 'roster-img bench-player-img';
+
+                            // --- NOUVEAU : Logique des bulles ---
+                            // On récupère les nombres depuis le Google Sheet (convertis en entier)
+                            // Si vide, on met 0 par défaut
+                            const played = parseInt(player.played) || 0;
+                            const total = parseInt(player.total) || 0;
+                            
+                            let dotsHTML = '<div class="dots-container">';
+                            // On crée une bulle pour chaque match prévu
+                            for (let i = 0; i < total; i++) {
+                                if (i < played) {
+                                    dotsHTML += '<div class="match-dot dot-filled"></div>'; // Match Joué
+                                } else {
+                                    dotsHTML += '<div class="match-dot dot-empty"></div>'; // Match Restant
+                                }
+                            }
+                            dotsHTML += '</div>';
 
                             rosterHTML += `
                                 <div class="roster-item">
                                     <div class="roster-left">
                                         <img src="${player.img}" class="${imgClass}" onerror="this.style.display='none'">
-                                        <span class="${cssClass}">${player.joueur}</span>
+                                        <div class="roster-info-block">
+                                            <span class="${cssClass}">${player.joueur}</span>
+                                            ${dotsHTML} </div>
                                     </div>
                                     <div style="display:flex; align-items:center">
                                         <span class="roster-status">${player.statut || ''}</span>
@@ -264,7 +285,7 @@
                 });
 
             } catch (error) {
-                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement.<br>Vérifie tes onglets Google Sheets.</p>';
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur.<br>Vérifie que API_DETAILS a bien les colonnes "played" et "total".</p>';
                 console.error(error);
             }
         }
