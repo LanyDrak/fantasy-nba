@@ -28,8 +28,8 @@
         /* --- ENTÊTE --- */
         .header-row {
             display: grid;
-            /* On agrandit un peu la 1ère colonne pour le logo (60px) */
-            grid-template-columns: 60px 2fr 2.5fr 1fr; 
+            /* MODIFIÉ : On agrandit la 1ère colonne à 120px pour le grand logo */
+            grid-template-columns: 120px 2fr 2.5fr 1fr; 
             padding: 10px 20px;
             font-size: 0.8rem; font-weight: 700; color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase; letter-spacing: 1px;
@@ -50,13 +50,13 @@
 
         .row-summary {
             display: grid;
-            /* Idem : 60px pour la colonne logo */
-            grid-template-columns: 60px 2fr 2.5fr 1fr;
+            /* MODIFIÉ : Idem, 120px pour la colonne logo */
+            grid-template-columns: 120px 2fr 2.5fr 1fr;
             padding: 10px 20px;
             align-items: center;
         }
 
-        /* --- LOGO ÉQUIPE (Remplacement du rang) --- */
+        /* --- LOGO ÉQUIPE (Desktop) --- */
         .rank-container {
             display: flex;
             align-items: center;
@@ -64,15 +64,16 @@
         }
         
         .team-logo-main {
-            width: 45px;
-            height: 45px;
-            object-fit: contain; /* Garde les proportions du logo */
-            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3)); /* Ombre portée pour détacher le logo du fond */
+            /* MODIFIÉ : Taille agrandie à 100x100px sur Desktop */
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3));
             transition: transform 0.2s;
         }
-        .player-row:hover .team-logo-main { transform: scale(1.1); } /* Petit zoom au survol */
+        .player-row:hover .team-logo-main { transform: scale(1.05); } /* Zoom léger */
 
-        /* Style de secours si pas d'image (le numéro revient) */
+        /* Style de secours */
         .rank-fallback { font-size: 1.2rem; font-weight: 700; color: rgba(255, 255, 255, 0.5); }
         .rank-gold { color: #ffd700; }
         .rank-silver { color: #c0c0c0; }
@@ -80,30 +81,20 @@
 
 
         /* --- ROSTER (Détails) --- */
-        .roster-details {
-            display: none; 
-            background: rgba(0, 0, 0, 0.3); 
-            padding: 15px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .roster-details { display: none; background: rgba(0, 0, 0, 0.3); padding: 15px 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
         .roster-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.9rem; }
         .roster-item:last-child { border-bottom: none; }
         .roster-left { display: flex; align-items: center; gap: 12px; }
         .roster-info-block { display: flex; flex-direction: column; justify-content: center; }
-
         .roster-img { height: 40px; width: auto; border-radius: 4px; object-fit: cover; background-color: rgba(0,0,0,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .bench-player-img { opacity: 0.6; filter: grayscale(30%); }
-        
         .roster-name { color: #ddd; font-weight: 500; line-height: 1.1; }
         .roster-name.starter { color: #fff; font-weight: 700; font-size: 1rem; }
         .roster-name.starter::before { content: "⭐ "; font-size: 0.8rem; }
-        
-        /* Bulles de matchs */
         .dots-container { display: flex; gap: 4px; margin-top: 4px; }
         .match-dot { width: 6px; height: 6px; border-radius: 50%; }
         .dot-filled { background-color: #26de81; box-shadow: 0 0 2px #26de81; }
         .dot-empty { background-color: rgba(255, 255, 255, 0.2); }
-
         .roster-score { color: #81e6d9; font-weight: 600; }
         .roster-status { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-right: 10px;}
 
@@ -111,31 +102,30 @@
         .coach-info { display: flex; flex-direction: column; }
         .coach-name { font-weight: 700; font-size: 1.1rem; }
         .team-name { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
-
         .mvp-info { display: flex; justify-content: flex-start; align-items: center; height: 100%; }
         .mvp-container { display: flex; align-items: center; gap: 15px; }
         .mvp-image { height: 60px; width: auto; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); background-color: rgba(0,0,0,0.2); }
         .mvp-text-details { display: flex; flex-direction: column; text-align: left; }
         .mvp-name { font-weight: 600; color: #fff; font-size: 0.95rem; line-height: 1.2; }
         .mvp-score { color: #81e6d9; font-size: 0.8rem; font-weight: 700; margin-top: 2px;}
-
         .score-box { background: rgba(255, 255, 255, 0.2); border-radius: 8px; text-align: center; padding: 8px 0; font-weight: 700; }
         .score-week { font-size: 1.6rem; color: #fff; }
         .score-total { font-size: 0.7rem; color: rgba(255, 255, 255, 0.8); display: block;}
-
         .loader { text-align: center; margin-top: 50px; color: rgba(255,255,255,0.7); }
 
         /* --- MOBILE --- */
         @media (max-width: 600px) {
             .header-row { display: none; }
             .row-summary {
-                /* On adapte la grille mobile pour le logo */
-                grid-template-columns: 50px 1fr auto; 
+                /* MODIFIÉ : Grille mobile adaptée (60px pour le logo) */
+                grid-template-columns: 60px 1fr auto; 
                 grid-template-areas: "rank coach score" "rank mvp score";
                 gap: 12px; padding: 15px;
             }
             .rank-container { grid-area: rank; align-self: center; justify-self: start;}
-            .team-logo-main { width: 40px; height: 40px; } /* Un peu plus petit sur mobile */
+            
+            /* MODIFIÉ : On force le logo à 50px sur mobile */
+            .team-logo-main { width: 50px; height: 50px; }
             
             .coach-info { grid-area: coach; }
             .score-box { grid-area: score; min-width: 70px; align-self: center;}
@@ -189,15 +179,12 @@
                     let rank = index + 1;
                     let displayRank = rank < 10 ? `0${rank}` : rank;
                     
-                    // Définition de la classe couleur si on doit afficher le numéro (fallback)
                     let rankClass = 'rank-fallback';
                     if (rank === 1) rankClass += ' rank-gold';
                     else if (rank === 2) rankClass += ' rank-silver';
                     else if (rank === 3) rankClass += ' rank-bronze';
 
-                    // CONSTRUCTION DE L'URL DU LOGO
                     // Suppose que les fichiers sont à la racine
-                    // On encodeURI pour gérer les espaces éventuels (Golden State -> Golden%20State)
                     const logoUrl = `${encodeURIComponent(coach.equipe)}.png`;
 
                     const myPlayers = detailsData.filter(p => p.coach === coach.coach);
