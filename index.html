@@ -28,7 +28,8 @@
         /* --- ENTÊTE --- */
         .header-row {
             display: grid;
-            grid-template-columns: 50px 2fr 2.5fr 1fr; 
+            /* On agrandit un peu la 1ère colonne pour le logo (60px) */
+            grid-template-columns: 60px 2fr 2.5fr 1fr; 
             padding: 10px 20px;
             font-size: 0.8rem; font-weight: 700; color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase; letter-spacing: 1px;
@@ -49,10 +50,34 @@
 
         .row-summary {
             display: grid;
-            grid-template-columns: 50px 2fr 2.5fr 1fr;
+            /* Idem : 60px pour la colonne logo */
+            grid-template-columns: 60px 2fr 2.5fr 1fr;
             padding: 10px 20px;
             align-items: center;
         }
+
+        /* --- LOGO ÉQUIPE (Remplacement du rang) --- */
+        .rank-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .team-logo-main {
+            width: 45px;
+            height: 45px;
+            object-fit: contain; /* Garde les proportions du logo */
+            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3)); /* Ombre portée pour détacher le logo du fond */
+            transition: transform 0.2s;
+        }
+        .player-row:hover .team-logo-main { transform: scale(1.1); } /* Petit zoom au survol */
+
+        /* Style de secours si pas d'image (le numéro revient) */
+        .rank-fallback { font-size: 1.2rem; font-weight: 700; color: rgba(255, 255, 255, 0.5); }
+        .rank-gold { color: #ffd700; }
+        .rank-silver { color: #c0c0c0; }
+        .rank-bronze { color: #cd7f32; }
+
 
         /* --- ROSTER (Détails) --- */
         .roster-details {
@@ -61,57 +86,28 @@
             padding: 15px 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        .roster-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.9rem;
-        }
+        .roster-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.9rem; }
         .roster-item:last-child { border-bottom: none; }
-
         .roster-left { display: flex; align-items: center; gap: 12px; }
-        
         .roster-info-block { display: flex; flex-direction: column; justify-content: center; }
 
-        .roster-img {
-            height: 40px; width: auto; 
-            border-radius: 4px; 
-            object-fit: cover;
-            background-color: rgba(0,0,0,0.3);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transition: opacity 0.3s ease;
-        }
+        .roster-img { height: 40px; width: auto; border-radius: 4px; object-fit: cover; background-color: rgba(0,0,0,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .bench-player-img { opacity: 0.6; filter: grayscale(30%); }
         
         .roster-name { color: #ddd; font-weight: 500; line-height: 1.1; }
         .roster-name.starter { color: #fff; font-weight: 700; font-size: 1rem; }
         .roster-name.starter::before { content: "⭐ "; font-size: 0.8rem; }
         
-        /* --- NOUVEAU : STYLE DES BULLES DE MATCHS --- */
-        .dots-container {
-            display: flex;
-            gap: 4px; /* Espace entre les bulles */
-            margin-top: 4px;
-        }
-        .match-dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-        }
-        .dot-filled { background-color: #26de81; box-shadow: 0 0 2px #26de81; } /* Vert brillant */
-        .dot-empty { background-color: rgba(255, 255, 255, 0.2); } /* Gris transparent */
+        /* Bulles de matchs */
+        .dots-container { display: flex; gap: 4px; margin-top: 4px; }
+        .match-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .dot-filled { background-color: #26de81; box-shadow: 0 0 2px #26de81; }
+        .dot-empty { background-color: rgba(255, 255, 255, 0.2); }
 
         .roster-score { color: #81e6d9; font-weight: 600; }
         .roster-status { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-right: 10px;}
 
         /* --- COLONNES & MVP --- */
-        .rank { font-size: 1.2rem; font-weight: 700; color: rgba(255, 255, 255, 0.5); }
-        .player-row:nth-child(1) .rank { color: #ffd700; }
-        .player-row:nth-child(2) .rank { color: #c0c0c0; }
-        .player-row:nth-child(3) .rank { color: #cd7f32; }
-
         .coach-info { display: flex; flex-direction: column; }
         .coach-name { font-weight: 700; font-size: 1.1rem; }
         .team-name { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
@@ -133,11 +129,14 @@
         @media (max-width: 600px) {
             .header-row { display: none; }
             .row-summary {
-                grid-template-columns: 30px 1fr auto; 
+                /* On adapte la grille mobile pour le logo */
+                grid-template-columns: 50px 1fr auto; 
                 grid-template-areas: "rank coach score" "rank mvp score";
                 gap: 12px; padding: 15px;
             }
-            .rank { grid-area: rank; font-size: 1rem; align-self: center;}
+            .rank-container { grid-area: rank; align-self: center; justify-self: start;}
+            .team-logo-main { width: 40px; height: 40px; } /* Un peu plus petit sur mobile */
+            
             .coach-info { grid-area: coach; }
             .score-box { grid-area: score; min-width: 70px; align-self: center;}
             .mvp-info { grid-area: mvp; margin-top: 5px; }
@@ -154,7 +153,7 @@
     
     <div class="leaderboard-container">
         <div class="header-row">
-            <div>NO</div>
+            <div></div>
             <div>TEAM</div>
             <div style="padding-left: 10px;">TOP PLAYER</div> 
             <div style="text-align: center">POINTS</div>
@@ -189,9 +188,19 @@
                 rankingData.forEach((coach, index) => {
                     let rank = index + 1;
                     let displayRank = rank < 10 ? `0${rank}` : rank;
+                    
+                    // Définition de la classe couleur si on doit afficher le numéro (fallback)
+                    let rankClass = 'rank-fallback';
+                    if (rank === 1) rankClass += ' rank-gold';
+                    else if (rank === 2) rankClass += ' rank-silver';
+                    else if (rank === 3) rankClass += ' rank-bronze';
+
+                    // CONSTRUCTION DE L'URL DU LOGO
+                    // Suppose que les fichiers sont à la racine
+                    // On encodeURI pour gérer les espaces éventuels (Golden State -> Golden%20State)
+                    const logoUrl = `${encodeURIComponent(coach.equipe)}.png`;
 
                     const myPlayers = detailsData.filter(p => p.coach === coach.coach);
-                    
                     myPlayers.sort((a, b) => {
                         const isStarterA = a.statut && a.statut.includes('Titulaire');
                         const isStarterB = b.statut && b.statut.includes('Titulaire');
@@ -214,21 +223,13 @@
                             const isStarter = player.statut && player.statut.includes('Titulaire');
                             const cssClass = isStarter ? 'roster-name starter' : 'roster-name';
                             const imgClass = isStarter ? 'roster-img' : 'roster-img bench-player-img';
-
-                            // --- NOUVEAU : Logique des bulles ---
-                            // On récupère les nombres depuis le Google Sheet (convertis en entier)
-                            // Si vide, on met 0 par défaut
                             const played = parseInt(player.played) || 0;
                             const total = parseInt(player.total) || 0;
                             
                             let dotsHTML = '<div class="dots-container">';
-                            // On crée une bulle pour chaque match prévu
                             for (let i = 0; i < total; i++) {
-                                if (i < played) {
-                                    dotsHTML += '<div class="match-dot dot-filled"></div>'; // Match Joué
-                                } else {
-                                    dotsHTML += '<div class="match-dot dot-empty"></div>'; // Match Restant
-                                }
+                                if (i < played) dotsHTML += '<div class="match-dot dot-filled"></div>';
+                                else dotsHTML += '<div class="match-dot dot-empty"></div>';
                             }
                             dotsHTML += '</div>';
 
@@ -238,7 +239,8 @@
                                         <img src="${player.img}" class="${imgClass}" onerror="this.style.display='none'">
                                         <div class="roster-info-block">
                                             <span class="${cssClass}">${player.joueur}</span>
-                                            ${dotsHTML} </div>
+                                            ${dotsHTML}
+                                        </div>
                                     </div>
                                     <div style="display:flex; align-items:center">
                                         <span class="roster-status">${player.statut || ''}</span>
@@ -253,7 +255,11 @@
 
                     row.innerHTML = `
                         <div class="row-summary">
-                            <div class="rank">${displayRank}</div>
+                            <div class="rank-container">
+                                <img src="${logoUrl}" alt="${coach.equipe}" class="team-logo-main" 
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                                <span class="${rankClass}" style="display:none">${displayRank}</span>
+                            </div>
                             
                             <div class="coach-info">
                                 <span class="coach-name">${coach.coach}</span>
@@ -285,7 +291,7 @@
                 });
 
             } catch (error) {
-                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur.<br>Vérifie que API_DETAILS a bien les colonnes "played" et "total".</p>';
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur.<br>Vérifie la connexion et le nom des fichiers images.</p>';
                 console.error(error);
             }
         }
