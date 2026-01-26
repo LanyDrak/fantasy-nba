@@ -18,26 +18,30 @@
             min-height: 100vh;
         }
 
-        h1 { 
-            text-align: center; color: #ffffff; margin-bottom: 5px; 
-            font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; 
-        }
+        h1 { text-align: center; color: #ffffff; margin-bottom: 5px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; }
         .subtitle { text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin-bottom: 30px; }
-        .leaderboard-container { max-width: 1000px; margin: 0 auto; } /* Agrandissement un peu pour faire tenir la 5e colonne */
+        
+        /* --- NOUVEAU LAYOUT (GAUCHE / DROITE) --- */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px; /* Le tableau prend le reste, la sidebar prend 320px */
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: start; /* Aligne le haut des deux colonnes */
+        }
 
-        /* --- ENTÊTE --- */
+        /* --- COLONNE GAUCHE : TABLEAU --- */
+        .leaderboard-section { width: 100%; }
+
         .header-row {
             display: grid;
-            /* MODIFIÉ : Ajout d'une 5ème colonne à la fin pour le Top 3 passé */
-            /* Logo | Team | Current MVP | Points | Last Week Top 3 */
-            grid-template-columns: 100px 1.5fr 1.8fr 0.7fr 2fr; 
+            grid-template-columns: 100px 1.5fr 2fr 1fr; 
             padding: 10px 20px;
             font-size: 0.8rem; font-weight: 700; color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase; letter-spacing: 1px;
-            align-items: center;
         }
 
-        /* --- LIGNES COACH --- */
         .player-row {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -52,65 +56,72 @@
 
         .row-summary {
             display: grid;
-            /* MODIFIÉ : Même grille que l'entête */
-            grid-template-columns: 100px 1.5fr 1.8fr 0.7fr 2fr;
+            grid-template-columns: 100px 1.5fr 2fr 1fr;
             padding: 10px 20px;
             align-items: center;
         }
 
-        /* --- LOGO ÉQUIPE (Desktop) --- */
-        .rank-container { display: flex; align-items: center; justify-content: center; }
-        .team-logo-main {
-            width: 90px; height: 90px; /* Légèrement réduit pour faire de la place */
-            object-fit: contain; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3));
+        /* --- COLONNE DROITE : SIDEBAR TOP 3 --- */
+        .sidebar-section {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 20px; /* Reste visible au scroll */
+        }
+
+        .sidebar-title {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .podium-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             transition: transform 0.2s;
         }
-        .player-row:hover .team-logo-main { transform: scale(1.05); }
+        .podium-item:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.1); }
+        
+        .podium-rank { font-size: 1.2rem; font-weight: bold; width: 25px; text-align: center; }
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
 
-        /* Style de secours */
+        .podium-img {
+            width: 60px; height: 60px;
+            border-radius: 8px; /* Coins arrondis classiques */
+            object-fit: cover;
+            background-color: rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .podium-info { display: flex; flex-direction: column; }
+        .podium-name { font-weight: 600; font-size: 0.95rem; line-height: 1.2; }
+        .podium-stat-highlight { color: #81e6d9; font-weight: 700; font-size: 0.9rem; }
+        .podium-sub { font-size: 0.75rem; color: #888; }
+
+        /* --- ELEMENTS COMMUNS (LOGOS, ROSTER...) --- */
+        .rank-container { display: flex; align-items: center; justify-content: center; }
+        .team-logo-main { width: 90px; height: 90px; object-fit: contain; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3)); transition: transform 0.2s; }
+        .player-row:hover .team-logo-main { transform: scale(1.05); }
         .rank-fallback { font-size: 1.2rem; font-weight: 700; color: rgba(255, 255, 255, 0.5); }
         .rank-gold { color: #ffd700; } .rank-silver { color: #c0c0c0; } .rank-bronze { color: #cd7f32; }
 
-
-        /* --- NOUVEAU : TOP 3 LAST WEEK (DESIGN) --- */
-        .last-week-info {
-            display: flex;
-            justify-content: flex-start; /* Alignement gauche ou center selon goût */
-            gap: 15px;
-            border-left: 1px solid rgba(255,255,255,0.1); /* Séparateur visuel */
-            padding-left: 20px;
-        }
-        .mini-player {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            width: 60px;
-        }
-        .mini-player-img {
-            width: 45px; height: 45px;
-            border-radius: 50%; /* Rond */
-            border: 2px solid #ffd700; /* Cadre OR */
-            object-fit: cover;
-            margin-bottom: 4px;
-            background-color: rgba(0,0,0,0.3);
-        }
-        .mini-player-name {
-            font-size: 0.65rem;
-            color: #ddd;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-        .mini-player-score {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #ffd700; /* Texte Or */
-        }
-
-
-        /* --- ROSTER (Détails) --- */
         .roster-details { display: none; background: rgba(0, 0, 0, 0.3); padding: 15px 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
         .roster-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.9rem; }
         .roster-item:last-child { border-bottom: none; }
@@ -118,9 +129,7 @@
         .roster-info-block { display: flex; flex-direction: column; justify-content: center; }
         .roster-img { height: 40px; width: auto; border-radius: 4px; object-fit: cover; background-color: rgba(0,0,0,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .bench-player-img { opacity: 0.6; filter: grayscale(30%); }
-        .roster-name { color: #ddd; font-weight: 500; line-height: 1.1; }
-        .roster-name.starter { color: #fff; font-weight: 700; font-size: 1rem; }
-        .roster-name.starter::before { content: "⭐ "; font-size: 0.8rem; }
+        .roster-name.starter { color: #fff; font-weight: 700; } .roster-name.starter::before { content: "⭐ "; font-size: 0.8rem; }
         .dots-container { display: flex; gap: 4px; margin-top: 4px; }
         .match-dot { width: 6px; height: 6px; border-radius: 50%; }
         .dot-filled { background-color: #26de81; box-shadow: 0 0 2px #26de81; }
@@ -128,7 +137,6 @@
         .roster-score { color: #81e6d9; font-weight: 600; }
         .roster-status { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-right: 10px;}
 
-        /* --- COLONNES & MVP --- */
         .coach-info { display: flex; flex-direction: column; }
         .coach-name { font-weight: 700; font-size: 1.1rem; }
         .team-name { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
@@ -143,11 +151,16 @@
         .score-total { font-size: 0.7rem; color: rgba(255, 255, 255, 0.8); display: block;}
         .loader { text-align: center; margin-top: 50px; color: rgba(255,255,255,0.7); }
 
-        /* --- MOBILE --- */
-        @media (max-width: 600px) {
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 800px) {
+            /* On passe en une seule colonne */
+            .main-layout { display: block; }
+            
+            /* On CACHE la sidebar sur mobile */
+            .sidebar-section { display: none; }
+
             .header-row { display: none; }
             .row-summary {
-                /* Retour à la grille simple pour mobile (sans la colonne Top 3) */
                 grid-template-columns: 60px 1fr auto; 
                 grid-template-areas: "rank coach score" "rank mvp score";
                 gap: 12px; padding: 15px;
@@ -160,9 +173,6 @@
             .mvp-image { height: 45px; } 
             .mvp-name { font-size: 0.9rem; }
             .roster-status { display: none; }
-
-            /* CACHER LA NOUVELLE COLONNE EN MOBILE */
-            .last-week-info, .header-last-week { display: none; }
         }
     </style>
 </head>
@@ -171,17 +181,8 @@
     <h1>Fantasy NBA League</h1>
     <div class="subtitle">Weekly Ranking</div>
     
-    <div class="leaderboard-container">
-        <div class="header-row">
-            <div></div>
-            <div>TEAM</div>
-            <div style="padding-left: 10px;">TOP PLAYER</div> 
-            <div style="text-align: center">POINTS</div>
-            <div class="header-last-week" style="padding-left: 20px;">TOP 3 (Last Week)</div> </div>
-
-        <div id="app">
-            <div class="loader">Loading...</div>
-        </div>
+    <div id="app">
+        <div class="loader">Loading...</div>
     </div>
 
     <script>
@@ -201,9 +202,50 @@
                 const rankingData = await resRanking.json();
                 const detailsData = await resDetails.json();
 
+                // --- 1. GÉNÉRATION DU TOP 3 GLOBAL (SIDEBAR) ---
+                // On prend tous les joueurs, on trie par previous_avg
+                const allPlayers = [...detailsData];
+                const top3Global = allPlayers
+                    .filter(p => parseFloat(p.previous_avg) > 0)
+                    .sort((a, b) => parseFloat(b.previous_avg) - parseFloat(a.previous_avg))
+                    .slice(0, 3);
+
+                let sidebarHTML = `
+                    <div class="sidebar-section">
+                        <div class="sidebar-title">🔥 Best Avg Last Week</div>
+                `;
+
+                if (top3Global.length > 0) {
+                    top3Global.forEach((player, index) => {
+                        let rankClass = index === 0 ? 'rank-1' : (index === 1 ? 'rank-2' : 'rank-3');
+                        sidebarHTML += `
+                            <div class="podium-item">
+                                <div class="podium-rank ${rankClass}">#${index + 1}</div>
+                                <img src="${player.img}" class="podium-img" onerror="this.style.display='none'">
+                                <div class="podium-info">
+                                    <span class="podium-name">${player.joueur}</span>
+                                    <span class="podium-stat-highlight">${player.previous_avg} pts/m</span>
+                                    <span class="podium-sub">Total: ${player.last_total} pts</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    sidebarHTML += '<div style="text-align:center; color:#888;">Pas de données</div>';
+                }
+                sidebarHTML += `</div>`; // Fin sidebar
+
+
+                // --- 2. GÉNÉRATION DU TABLEAU (MAIN) ---
                 rankingData.sort((a, b) => parseFloat(b.score_semaine) - parseFloat(a.score_semaine));
 
-                container.innerHTML = '';
+                let mainContentHTML = `<div class="leaderboard-section">
+                    <div class="header-row">
+                        <div></div>
+                        <div>TEAM</div>
+                        <div style="padding-left: 10px;">TOP PLAYER</div> 
+                        <div style="text-align: center">POINTS</div>
+                    </div>`;
 
                 rankingData.forEach((coach, index) => {
                     let rank = index + 1;
@@ -216,11 +258,8 @@
 
                     const logoUrl = `${encodeURIComponent(coach.equipe)}.png`;
 
-                    // --- TRAITEMENT DES JOUEURS ---
                     const myPlayers = detailsData.filter(p => p.coach === coach.coach);
-
-                    // 1. TRI POUR LE ROSTER ACTUEL (Titulaires d'abord, puis score actuel)
-                    const rosterPlayers = [...myPlayers].sort((a, b) => {
+                    myPlayers.sort((a, b) => {
                         const isStarterA = a.statut && a.statut.includes('Titulaire');
                         const isStarterB = b.statut && b.statut.includes('Titulaire');
                         if (isStarterA && !isStarterB) return -1;
@@ -228,42 +267,10 @@
                         return parseFloat(b.score) - parseFloat(a.score);
                     });
 
-                    // 2. NOUVEAU : TRI POUR LE TOP 3 SEMAINE PASSÉE (Basé sur previous_avg)
-                    // On filtre pour ne garder que ceux qui ont une moyenne > 0
-                    const pastTop3 = [...myPlayers]
-                        .filter(p => parseFloat(p.previous_avg) > 0)
-                        .sort((a, b) => parseFloat(b.previous_avg) - parseFloat(a.previous_avg))
-                        .slice(0, 3); // On garde les 3 premiers
-
-                    // --- GENERATION HTML TOP 3 LAST WEEK ---
-                    let top3HTML = '<div class="last-week-info">';
-                    if (pastTop3.length > 0) {
-                        pastTop3.forEach(p => {
-                            top3HTML += `
-                                <div class="mini-player">
-                                    <img src="${p.img}" class="mini-player-img" onerror="this.style.display='none'">
-                                    <span class="mini-player-name">${p.joueur}</span>
-                                    <span class="mini-player-score">${p.previous_avg}</span>
-                                </div>
-                            `;
-                        });
-                    } else {
-                        top3HTML += '<span style="font-size:0.7rem; color:#888;">-</span>';
-                    }
-                    top3HTML += '</div>';
-                    // ---------------------------------------
-
-                    const row = document.createElement('div');
-                    row.className = 'player-row';
-                    
-                    row.onclick = function() {
-                        const detailsDiv = this.querySelector('.roster-details');
-                        detailsDiv.style.display = (detailsDiv.style.display === 'block') ? 'none' : 'block';
-                    };
-
+                    // Création de la liste des joueurs (HTML string)
                     let rosterHTML = '';
-                    if(rosterPlayers.length > 0) {
-                        rosterPlayers.forEach(player => {
+                    if(myPlayers.length > 0) {
+                        myPlayers.forEach(player => {
                             const isStarter = player.statut && player.statut.includes('Titulaire');
                             const cssClass = isStarter ? 'roster-name starter' : 'roster-name';
                             const imgClass = isStarter ? 'roster-img' : 'roster-img bench-player-img';
@@ -297,47 +304,59 @@
                         rosterHTML = '<div class="roster-item" style="color:#888; font-style:italic">Aucun joueur trouvé...</div>';
                     }
 
-                    row.innerHTML = `
-                        <div class="row-summary">
-                            <div class="rank-container">
-                                <img src="${logoUrl}" alt="${coach.equipe}" class="team-logo-main" 
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                                <span class="${rankClass}" style="display:none">${displayRank}</span>
-                            </div>
-                            
-                            <div class="coach-info">
-                                <span class="coach-name">${coach.coach}</span>
-                                <span class="team-name">${coach.equipe}</span>
-                            </div>
+                    // On construit la ligne HTML
+                    // Note: j'utilise onclick="toggleRoster(this)" pour simplifier
+                    mainContentHTML += `
+                        <div class="player-row" onclick="this.querySelector('.roster-details').style.display = (this.querySelector('.roster-details').style.display === 'block' ? 'none' : 'block')">
+                            <div class="row-summary">
+                                <div class="rank-container">
+                                    <img src="${logoUrl}" alt="${coach.equipe}" class="team-logo-main" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                                    <span class="${rankClass}" style="display:none">${displayRank}</span>
+                                </div>
+                                
+                                <div class="coach-info">
+                                    <span class="coach-name">${coach.coach}</span>
+                                    <span class="team-name">${coach.equipe}</span>
+                                </div>
 
-                            <div class="mvp-info">
-                                <div class="mvp-container">
-                                    <img src="${coach.top_player_image}" alt="${coach.top_player}" class="mvp-image" onerror="this.style.display='none'">
-                                    <div class="mvp-text-details">
-                                        <span class="mvp-name">${coach.top_player}</span>
-                                        <span class="mvp-score">${coach.top_player_score} pts</span>
+                                <div class="mvp-info">
+                                    <div class="mvp-container">
+                                        <img src="${coach.top_player_image}" alt="${coach.top_player}" class="mvp-image" onerror="this.style.display='none'">
+                                        <div class="mvp-text-details">
+                                            <span class="mvp-name">${coach.top_player}</span>
+                                            <span class="mvp-score">${coach.top_player_score} pts</span>
+                                        </div>
                                     </div>
+                                </div>
+
+                                <div class="score-box">
+                                    <div class="score-week">${coach.score_semaine}</div>
+                                    <span class="score-total">Total: ${coach.total_saison}</span>
                                 </div>
                             </div>
 
-                            <div class="score-box">
-                                <div class="score-week">${coach.score_semaine}</div>
-                                <span class="score-total">Total: ${coach.total_saison}</span>
+                            <div class="roster-details">
+                                <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:10px; font-weight:700;">Détail de l'équipe</div>
+                                ${rosterHTML}
                             </div>
-
-                            ${top3HTML}
-                        </div>
-
-                        <div class="roster-details">
-                            <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:10px; font-weight:700;">Détail de l'équipe</div>
-                            ${rosterHTML}
                         </div>
                     `;
-                    container.appendChild(row);
                 });
+                mainContentHTML += `</div>`; // Fin leaderboard section
+
+
+                // --- 3. ASSEMBLAGE FINAL ---
+                // On met le tableau à gauche et la sidebar à droite
+                container.innerHTML = `
+                    <div class="main-layout">
+                        ${mainContentHTML}
+                        ${sidebarHTML}
+                    </div>
+                `;
 
             } catch (error) {
-                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur.<br>Vérifie la connexion et le nom des fichiers images.</p>';
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur.<br>Vérifie la connexion.</p>';
                 console.error(error);
             }
         }
