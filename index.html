@@ -140,4 +140,209 @@
         .mvp-score { color: #81e6d9; font-size: 0.8rem; font-weight: 700; margin-top: 2px;}
         .score-box { background: rgba(255, 255, 255, 0.2); border-radius: 8px; text-align: center; padding: 8px 0; font-weight: 700; }
         .score-week { font-size: 1.6rem; color: #fff; }
-        .score-total { font-size: 0.7rem; color: rgba(255, 255, 255, 0.8); display: block
+        .score-total { font-size: 0.7rem; color: rgba(255, 255, 255, 0.8); display: block;}
+        .loader { text-align: center; margin-top: 50px; color: rgba(255,255,255,0.7); }
+
+        /* --- MOBILE --- */
+        @media (max-width: 600px) {
+            .header-row { display: none; }
+            .row-summary {
+                /* Retour à la grille simple pour mobile (sans la colonne Top 3) */
+                grid-template-columns: 60px 1fr auto; 
+                grid-template-areas: "rank coach score" "rank mvp score";
+                gap: 12px; padding: 15px;
+            }
+            .rank-container { grid-area: rank; align-self: center; justify-self: start;}
+            .team-logo-main { width: 50px; height: 50px; }
+            .coach-info { grid-area: coach; }
+            .score-box { grid-area: score; min-width: 70px; align-self: center;}
+            .mvp-info { grid-area: mvp; margin-top: 5px; }
+            .mvp-image { height: 45px; } 
+            .mvp-name { font-size: 0.9rem; }
+            .roster-status { display: none; }
+
+            /* CACHER LA NOUVELLE COLONNE EN MOBILE */
+            .last-week-info, .header-last-week { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Fantasy NBA League</h1>
+    <div class="subtitle">Weekly Ranking</div>
+    
+    <div class="leaderboard-container">
+        <div class="header-row">
+            <div></div>
+            <div>TEAM</div>
+            <div style="padding-left: 10px;">TOP PLAYER</div> 
+            <div style="text-align: center">POINTS</div>
+            <div class="header-last-week" style="padding-left: 20px;">TOP 3 (Last Week)</div> </div>
+
+        <div id="app">
+            <div class="loader">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        const sheetID = '1TuAK0ETIb-mcpy6Se33_NCkF9RhoQT7j32uJko38Pnw'; 
+        const tabRanking = 'API_JOUEURS'; 
+        const tabDetails = 'API_DETAILS'; 
+
+        async function fetchData() {
+            const container = document.getElementById('app');
+            
+            try {
+                const [resRanking, resDetails] = await Promise.all([
+                    fetch(`https://opensheet.elk.sh/${sheetID}/${tabRanking}`),
+                    fetch(`https://opensheet.elk.sh/${sheetID}/${tabDetails}`)
+                ]);
+
+                const rankingData = await resRanking.json();
+                const detailsData = await resDetails.json();
+
+                rankingData.sort((a, b) => parseFloat(b.score_semaine) - parseFloat(a.score_semaine));
+
+                container.innerHTML = '';
+
+                rankingData.forEach((coach, index) => {
+                    let rank = index + 1;
+                    let displayRank = rank < 10 ? `0${rank}` : rank;
+                    
+                    let rankClass = 'rank-fallback';
+                    if (rank === 1) rankClass += ' rank-gold';
+                    else if (rank === 2) rankClass += ' rank-silver';
+                    else if (rank === 3) rankClass += ' rank-bronze';
+
+                    const logoUrl = `${encodeURIComponent(coach.equipe)}.png`;
+
+                    // --- TRAITEMENT DES JOUEURS ---
+                    const myPlayers = detailsData.filter(p => p.coach === coach.coach);
+
+                    // 1. TRI POUR LE ROSTER ACTUEL (Titulaires d'abord, puis score actuel)
+                    const rosterPlayers = [...myPlayers].sort((a, b) => {
+                        const isStarterA = a.statut && a.statut.includes('Titulaire');
+                        const isStarterB = b.statut && b.statut.includes('Titulaire');
+                        if (isStarterA && !isStarterB) return -1;
+                        if (!isStarterA && isStarterB) return 1;
+                        return parseFloat(b.score) - parseFloat(a.score);
+                    });
+
+                    // 2. NOUVEAU : TRI POUR LE TOP 3 SEMAINE PASSÉE (Basé sur previous_avg)
+                    // On filtre pour ne garder que ceux qui ont une moyenne > 0
+                    const pastTop3 = [...myPlayers]
+                        .filter(p => parseFloat(p.previous_avg) > 0)
+                        .sort((a, b) => parseFloat(b.previous_avg) - parseFloat(a.previous_avg))
+                        .slice(0, 3); // On garde les 3 premiers
+
+                    // --- GENERATION HTML TOP 3 LAST WEEK ---
+                    let top3HTML = '<div class="last-week-info">';
+                    if (pastTop3.length > 0) {
+                        pastTop3.forEach(p => {
+                            top3HTML += `
+                                <div class="mini-player">
+                                    <img src="${p.img}" class="mini-player-img" onerror="this.style.display='none'">
+                                    <span class="mini-player-name">${p.joueur}</span>
+                                    <span class="mini-player-score">${p.previous_avg}</span>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        top3HTML += '<span style="font-size:0.7rem; color:#888;">-</span>';
+                    }
+                    top3HTML += '</div>';
+                    // ---------------------------------------
+
+                    const row = document.createElement('div');
+                    row.className = 'player-row';
+                    
+                    row.onclick = function() {
+                        const detailsDiv = this.querySelector('.roster-details');
+                        detailsDiv.style.display = (detailsDiv.style.display === 'block') ? 'none' : 'block';
+                    };
+
+                    let rosterHTML = '';
+                    if(rosterPlayers.length > 0) {
+                        rosterPlayers.forEach(player => {
+                            const isStarter = player.statut && player.statut.includes('Titulaire');
+                            const cssClass = isStarter ? 'roster-name starter' : 'roster-name';
+                            const imgClass = isStarter ? 'roster-img' : 'roster-img bench-player-img';
+                            const played = parseInt(player.played) || 0;
+                            const total = parseInt(player.total) || 0;
+                            
+                            let dotsHTML = '<div class="dots-container">';
+                            for (let i = 0; i < total; i++) {
+                                if (i < played) dotsHTML += '<div class="match-dot dot-filled"></div>';
+                                else dotsHTML += '<div class="match-dot dot-empty"></div>';
+                            }
+                            dotsHTML += '</div>';
+
+                            rosterHTML += `
+                                <div class="roster-item">
+                                    <div class="roster-left">
+                                        <img src="${player.img}" class="${imgClass}" onerror="this.style.display='none'">
+                                        <div class="roster-info-block">
+                                            <span class="${cssClass}">${player.joueur}</span>
+                                            ${dotsHTML}
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; align-items:center">
+                                        <span class="roster-status">${player.statut || ''}</span>
+                                        <span class="roster-score">${player.score} pts</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        rosterHTML = '<div class="roster-item" style="color:#888; font-style:italic">Aucun joueur trouvé...</div>';
+                    }
+
+                    row.innerHTML = `
+                        <div class="row-summary">
+                            <div class="rank-container">
+                                <img src="${logoUrl}" alt="${coach.equipe}" class="team-logo-main" 
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                                <span class="${rankClass}" style="display:none">${displayRank}</span>
+                            </div>
+                            
+                            <div class="coach-info">
+                                <span class="coach-name">${coach.coach}</span>
+                                <span class="team-name">${coach.equipe}</span>
+                            </div>
+
+                            <div class="mvp-info">
+                                <div class="mvp-container">
+                                    <img src="${coach.top_player_image}" alt="${coach.top_player}" class="mvp-image" onerror="this.style.display='none'">
+                                    <div class="mvp-text-details">
+                                        <span class="mvp-name">${coach.top_player}</span>
+                                        <span class="mvp-score">${coach.top_player_score} pts</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="score-box">
+                                <div class="score-week">${coach.score_semaine}</div>
+                                <span class="score-total">Total: ${coach.total_saison}</span>
+                            </div>
+
+                            ${top3HTML}
+                        </div>
+
+                        <div class="roster-details">
+                            <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:10px; font-weight:700;">Détail de l'équipe</div>
+                            ${rosterHTML}
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+
+            } catch (error) {
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur.<br>Vérifie la connexion et le nom des fichiers images.</p>';
+                console.error(error);
+            }
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
