@@ -21,168 +21,162 @@
         h1 { text-align: center; color: #ffffff; margin-bottom: 5px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; }
         .subtitle { text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin-bottom: 30px; }
         
-        /* --- NOUVEAU LAYOUT (GAUCHE / DROITE) --- */
+        /* --- LAYOUT PRINCIPAL --- */
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr 320px; /* Le tableau prend le reste, la sidebar prend 320px */
+            grid-template-columns: 1fr 300px; /* Sidebar un peu plus fine */
             gap: 25px;
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            align-items: start; /* Aligne le haut des deux colonnes */
+            align-items: start;
         }
+
+        /* --- STYLE COMMUN DES LIGNES (Tableau + Sidebar) --- */
+        .glass-row {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+        .glass-row:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
 
         /* --- COLONNE GAUCHE : TABLEAU --- */
         .leaderboard-section { width: 100%; }
 
         .header-row {
             display: grid;
-            grid-template-columns: 100px 1.5fr 2fr 1fr; 
-            padding: 10px 20px;
+            grid-template-columns: 90px 1.5fr 2fr 1fr; 
+            padding: 15px 25px; /* Padding ajusté pour l'alignement */
             font-size: 0.8rem; font-weight: 700; color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 10px;
         }
 
-        .player-row {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            transition: background 0.2s;
-            cursor: pointer;
-            overflow: hidden;
-        }
-        .player-row:hover { background: rgba(255, 255, 255, 0.2); }
+        .player-row { cursor: pointer; } /* Hérite de .glass-row */
 
         .row-summary {
             display: grid;
-            grid-template-columns: 100px 1.5fr 2fr 1fr;
-            padding: 10px 20px;
+            grid-template-columns: 90px 1.5fr 2fr 1fr;
+            padding: 15px 25px;
             align-items: center;
         }
+
 
         /* --- COLONNE DROITE : SIDEBAR TOP 3 --- */
         .sidebar-section {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
             position: sticky;
-            top: 20px; /* Reste visible au scroll */
+            top: 20px;
         }
 
         .sidebar-title {
-            text-align: center;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #ffd700;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 10px;
+            font-size: 0.9rem; font-weight: 700; color: #ffd700;
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 15px; padding-left: 10px;
+            display: flex; align-items: center; gap: 10px;
         }
+        .sidebar-title::before { content: "🔥"; font-size: 1.2rem; }
 
         .podium-item {
+            /* Hérite de .glass-row + styles spécifiques */
             display: flex;
             align-items: center;
             gap: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.2s;
+            padding: 15px;
         }
-        .podium-item:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.1); }
         
-        .podium-rank { font-size: 1.2rem; font-weight: bold; width: 25px; text-align: center; }
-        .rank-1 { color: #ffd700; }
-        .rank-2 { color: #c0c0c0; }
-        .rank-3 { color: #cd7f32; }
+        .podium-rank { font-size: 1.4rem; font-weight: 800; width: 30px; text-align: center; line-height: 1;}
+        .rank-1 { color: #ffd700; text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3); }
+        .rank-2 { color: #e0e0e0; text-shadow: 0 2px 10px rgba(224, 224, 224, 0.3); }
+        .rank-3 { color: #cd7f32; text-shadow: 0 2px 10px rgba(205, 127, 50, 0.3); }
 
+        /* MODIFIÉ : Respect du ratio image */
         .podium-img {
-            width: 60px; height: 60px;
-            border-radius: 8px; /* Coins arrondis classiques */
+            height: 65px; /* Hauteur fixe */
+            width: auto;  /* Largeur auto pour le ratio portrait */
+            border-radius: 6px; /* Coins légèrement arrondis comme le reste */
             object-fit: cover;
             background-color: rgba(0,0,0,0.3);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
-        .podium-info { display: flex; flex-direction: column; }
-        .podium-name { font-weight: 600; font-size: 0.95rem; line-height: 1.2; }
-        .podium-stat-highlight { color: #81e6d9; font-weight: 700; font-size: 0.9rem; }
-        .podium-sub { font-size: 0.75rem; color: #888; }
+        .podium-info { display: flex; flex-direction: column; justify-content: center; }
+        .podium-name { font-weight: 700; font-size: 1rem; line-height: 1.2; margin-bottom: 4px; }
+        .podium-stat-highlight { color: #81e6d9; font-weight: 700; font-size: 0.95rem; }
 
-        /* --- ELEMENTS COMMUNS (LOGOS, ROSTER...) --- */
+
+        /* --- ELEMENTS COMMUNS --- */
         .rank-container { display: flex; align-items: center; justify-content: center; }
-        .team-logo-main { width: 90px; height: 90px; object-fit: contain; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3)); transition: transform 0.2s; }
+        .team-logo-main { width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3)); transition: transform 0.2s; }
         .player-row:hover .team-logo-main { transform: scale(1.05); }
         .rank-fallback { font-size: 1.2rem; font-weight: 700; color: rgba(255, 255, 255, 0.5); }
         .rank-gold { color: #ffd700; } .rank-silver { color: #c0c0c0; } .rank-bronze { color: #cd7f32; }
 
-        .roster-details { display: none; background: rgba(0, 0, 0, 0.3); padding: 15px 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-        .roster-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.9rem; }
+        .roster-details { display: none; background: rgba(0, 0, 0, 0.3); padding: 20px 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .roster-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem; }
         .roster-item:last-child { border-bottom: none; }
-        .roster-left { display: flex; align-items: center; gap: 12px; }
+        .roster-left { display: flex; align-items: center; gap: 15px; }
         .roster-info-block { display: flex; flex-direction: column; justify-content: center; }
-        .roster-img { height: 40px; width: auto; border-radius: 4px; object-fit: cover; background-color: rgba(0,0,0,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .roster-img { height: 45px; width: auto; border-radius: 4px; object-fit: cover; background-color: rgba(0,0,0,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .bench-player-img { opacity: 0.6; filter: grayscale(30%); }
         .roster-name.starter { color: #fff; font-weight: 700; } .roster-name.starter::before { content: "⭐ "; font-size: 0.8rem; }
-        .dots-container { display: flex; gap: 4px; margin-top: 4px; }
-        .match-dot { width: 6px; height: 6px; border-radius: 50%; }
-        .dot-filled { background-color: #26de81; box-shadow: 0 0 2px #26de81; }
+        .dots-container { display: flex; gap: 4px; margin-top: 5px; }
+        .match-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .dot-filled { background-color: #26de81; box-shadow: 0 0 3px #26de81; }
         .dot-empty { background-color: rgba(255, 255, 255, 0.2); }
-        .roster-score { color: #81e6d9; font-weight: 600; }
-        .roster-status { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-right: 10px;}
+        .roster-score { color: #81e6d9; font-weight: 600; font-size: 1rem;}
+        .roster-status { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-right: 15px;}
 
         .coach-info { display: flex; flex-direction: column; }
         .coach-name { font-weight: 700; font-size: 1.1rem; }
         .team-name { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
         .mvp-info { display: flex; justify-content: flex-start; align-items: center; height: 100%; }
         .mvp-container { display: flex; align-items: center; gap: 15px; }
-        .mvp-image { height: 60px; width: auto; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); background-color: rgba(0,0,0,0.2); }
+        .mvp-image { height: 65px; width: auto; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); background-color: rgba(0,0,0,0.2); }
         .mvp-text-details { display: flex; flex-direction: column; text-align: left; }
-        .mvp-name { font-weight: 600; color: #fff; font-size: 0.95rem; line-height: 1.2; }
-        .mvp-score { color: #81e6d9; font-size: 0.8rem; font-weight: 700; margin-top: 2px;}
-        .score-box { background: rgba(255, 255, 255, 0.2); border-radius: 8px; text-align: center; padding: 8px 0; font-weight: 700; }
-        .score-week { font-size: 1.6rem; color: #fff; }
-        .score-total { font-size: 0.7rem; color: rgba(255, 255, 255, 0.8); display: block;}
+        .mvp-name { font-weight: 600; color: #fff; font-size: 1rem; line-height: 1.2; }
+        .mvp-score { color: #81e6d9; font-size: 0.9rem; font-weight: 700; margin-top: 4px;}
+        .score-box { background: rgba(255, 255, 255, 0.2); border-radius: 12px; text-align: center; padding: 10px 0; font-weight: 700; box-shadow: inset 0 0 10px rgba(255,255,255,0.1); }
+        .score-week { font-size: 1.8rem; color: #fff; line-height: 1;}
+        .score-total { font-size: 0.75rem; color: rgba(255, 255, 255, 0.8); display: block; margin-top: 4px;}
         .loader { text-align: center; margin-top: 50px; color: rgba(255,255,255,0.7); }
 
         /* --- MOBILE RESPONSIVE --- */
-        @media (max-width: 800px) {
-            /* On passe en une seule colonne */
+        @media (max-width: 900px) {
             .main-layout { display: block; }
-            
-            /* On CACHE la sidebar sur mobile */
-            .sidebar-section { display: none; }
+            .sidebar-section { display: none; } /* Sidebar cachée sur mobile */
 
             .header-row { display: none; }
             .row-summary {
                 grid-template-columns: 60px 1fr auto; 
                 grid-template-areas: "rank coach score" "rank mvp score";
-                gap: 12px; padding: 15px;
+                gap: 15px; padding: 20px;
             }
             .rank-container { grid-area: rank; align-self: center; justify-self: start;}
-            .team-logo-main { width: 50px; height: 50px; }
+            .team-logo-main { width: 55px; height: 55px; }
             .coach-info { grid-area: coach; }
-            .score-box { grid-area: score; min-width: 70px; align-self: center;}
+            .score-box { grid-area: score; min-width: 80px; align-self: center;}
             .mvp-info { grid-area: mvp; margin-top: 5px; }
-            .mvp-image { height: 45px; } 
-            .mvp-name { font-size: 0.9rem; }
+            .mvp-image { height: 50px; } 
+            .mvp-name { font-size: 0.95rem; }
             .roster-status { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <h1>Fantasy NBA League</h1>
-    <div class="subtitle">Weekly Ranking</div>
+    <h1>The Floor General</h1>
+    <div class="subtitle">Weekly Fantasy League</div>
     
     <div id="app">
-        <div class="loader">Loading...</div>
+        <div class="loader">Chargement des scores...</div>
     </div>
 
     <script>
@@ -202,41 +196,38 @@
                 const rankingData = await resRanking.json();
                 const detailsData = await resDetails.json();
 
-                // --- 1. GÉNÉRATION DU TOP 3 GLOBAL (SIDEBAR) ---
-                // On prend tous les joueurs, on trie par previous_avg
+                // --- 1. SIDEBAR : TOP 3 GLOBAL (Semaine précédente) ---
                 const allPlayers = [...detailsData];
                 const top3Global = allPlayers
                     .filter(p => parseFloat(p.previous_avg) > 0)
                     .sort((a, b) => parseFloat(b.previous_avg) - parseFloat(a.previous_avg))
                     .slice(0, 3);
 
-                let sidebarHTML = `
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">🔥 Best Avg Last Week</div>
-                `;
+                let sidebarHTML = `<div class="sidebar-section">
+                        <div class="sidebar-title">Best Avg Last Week</div>`;
 
                 if (top3Global.length > 0) {
                     top3Global.forEach((player, index) => {
                         let rankClass = index === 0 ? 'rank-1' : (index === 1 ? 'rank-2' : 'rank-3');
+                        // Note : On utilise la classe glass-row ici aussi pour le design unifié
                         sidebarHTML += `
-                            <div class="podium-item">
-                                <div class="podium-rank ${rankClass}">#${index + 1}</div>
+                            <div class="podium-item glass-row">
+                                <div class="podium-rank ${rankClass}">${index + 1}</div>
                                 <img src="${player.img}" class="podium-img" onerror="this.style.display='none'">
                                 <div class="podium-info">
                                     <span class="podium-name">${player.joueur}</span>
                                     <span class="podium-stat-highlight">${player.previous_avg} pts/m</span>
-                                    <span class="podium-sub">Total: ${player.last_total} pts</span>
-                                </div>
+                                    </div>
                             </div>
                         `;
                     });
                 } else {
-                    sidebarHTML += '<div style="text-align:center; color:#888;">Pas de données</div>';
+                    sidebarHTML += '<div style="text-align:center; color:#888; padding:20px;">En attente de données...</div>';
                 }
                 sidebarHTML += `</div>`; // Fin sidebar
 
 
-                // --- 2. GÉNÉRATION DU TABLEAU (MAIN) ---
+                // --- 2. TABLEAU PRINCIPAL ---
                 rankingData.sort((a, b) => parseFloat(b.score_semaine) - parseFloat(a.score_semaine));
 
                 let mainContentHTML = `<div class="leaderboard-section">
@@ -267,7 +258,6 @@
                         return parseFloat(b.score) - parseFloat(a.score);
                     });
 
-                    // Création de la liste des joueurs (HTML string)
                     let rosterHTML = '';
                     if(myPlayers.length > 0) {
                         myPlayers.forEach(player => {
@@ -304,10 +294,9 @@
                         rosterHTML = '<div class="roster-item" style="color:#888; font-style:italic">Aucun joueur trouvé...</div>';
                     }
 
-                    // On construit la ligne HTML
-                    // Note: j'utilise onclick="toggleRoster(this)" pour simplifier
+                    // Note : Ajout de la classe 'glass-row' et 'player-row'
                     mainContentHTML += `
-                        <div class="player-row" onclick="this.querySelector('.roster-details').style.display = (this.querySelector('.roster-details').style.display === 'block' ? 'none' : 'block')">
+                        <div class="player-row glass-row" onclick="this.querySelector('.roster-details').style.display = (this.querySelector('.roster-details').style.display === 'block' ? 'none' : 'block')">
                             <div class="row-summary">
                                 <div class="rank-container">
                                     <img src="${logoUrl}" alt="${coach.equipe}" class="team-logo-main" 
@@ -337,17 +326,16 @@
                             </div>
 
                             <div class="roster-details">
-                                <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:10px; font-weight:700;">Détail de l'équipe</div>
+                                <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:15px; font-weight:700; letter-spacing:1px;">Détail de l'équipe</div>
                                 ${rosterHTML}
                             </div>
                         </div>
                     `;
                 });
-                mainContentHTML += `</div>`; // Fin leaderboard section
+                mainContentHTML += `</div>`;
 
 
                 // --- 3. ASSEMBLAGE FINAL ---
-                // On met le tableau à gauche et la sidebar à droite
                 container.innerHTML = `
                     <div class="main-layout">
                         ${mainContentHTML}
@@ -356,7 +344,7 @@
                 `;
 
             } catch (error) {
-                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur.<br>Vérifie la connexion.</p>';
+                container.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Erreur de chargement des données.</p>';
                 console.error(error);
             }
         }
