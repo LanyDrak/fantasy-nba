@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Fantasy NBA Ranking</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00c6fb">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -351,5 +356,15 @@
 
         fetchData();
     </script>
+
+    <script>
+    // Enregistrement du Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("PWA Service Worker Registered"))
+            .catch((err) => console.log("PWA Failed", err));
+        }
+    </script>
+    
 </body>
 </html>
