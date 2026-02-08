@@ -1,0 +1,16 @@
+{
+  "name": "The Floor General",
+  "short_name": "FloorGeneral",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#005bea",
+  "theme_color": "#00c6fb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
